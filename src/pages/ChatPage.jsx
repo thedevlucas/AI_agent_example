@@ -1,10 +1,8 @@
-"use client"
-
 import { useState, useEffect, useRef } from "react"
 import { useParams, useNavigate, Link } from "react-router-dom"
 import { useAuth } from "../contexts/AuthContext.jsx"
 import { chatAPI, messageAPI } from "../lib/api.js"
-import { ArrowLeft, Send, Bot, User, Loader2, MessageCircle, Shield } from "lucide-react"
+import { ArrowLeft, Send, Bot, User, Loader2, MessageCircle, Shield, Mic, MicOff } from "lucide-react"
 import MessageRenderer from "../components/MessageRenderer.jsx"
 import MessageActions from "../components/MessageActions.jsx"
 
@@ -17,11 +15,14 @@ const ChatPage = () => {
   const [newMessage, setNewMessage] = useState("")
   const [loading, setLoading] = useState(true)
   const [sending, setSending] = useState(false)
+  const [isListening, setIsListening] = useState(false)
+  const [speechSupported, setSpeechSupported] = useState(false)
   const messagesEndRef = useRef(null)
   const textareaRef = useRef(null)
+  const recognitionRef = useRef(null)
 
   // Check if current user is admin
-  const isAdmin = user.rank == "dev"
+  const isAdmin = user?.username === "admin" || user?.rank === "admin" || user?.rank === "dev"
 
   useEffect(() => {
     if (user && chatId) {
@@ -33,6 +34,75 @@ const ChatPage = () => {
   useEffect(() => {
     scrollToBottom()
   }, [messages])
+
+  useEffect(() => {
+    // Initialize speech recognition
+    if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
+      setSpeechSupported(true)
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+      recognitionRef.current = new SpeechRecognition()
+
+      const recognition = recognitionRef.current
+      recognition.continuous = false
+      recognition.interimResults = true
+      recognition.lang = "en-US" // You can make this configurable
+
+      recognition.onstart = () => {
+        console.log("Speech recognition started")
+        setIsListening(true)
+      }
+
+      recognition.onresult = (event) => {
+        let transcript = ""
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          transcript += event.results[i][0].transcript
+        }
+        console.log("Speech transcript:", transcript)
+        setNewMessage(transcript)
+
+        // Auto-resize textarea
+        if (textareaRef.current) {
+          textareaRef.current.style.height = "auto"
+          textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 120)}px`
+        }
+      }
+
+      recognition.onerror = (event) => {
+        console.error("Speech recognition error:", event.error)
+        setIsListening(false)
+
+        let errorMessage = "Speech recognition failed. "
+        switch (event.error) {
+          case "no-speech":
+            errorMessage += "No speech was detected."
+            break
+          case "audio-capture":
+            errorMessage += "No microphone was found."
+            break
+          case "not-allowed":
+            errorMessage += "Microphone permission denied."
+            break
+          case "network":
+            errorMessage += "Network error occurred."
+            break
+          default:
+            errorMessage += "Please try again."
+        }
+        alert(errorMessage)
+      }
+
+      recognition.onend = () => {
+        console.log("Speech recognition ended")
+        setIsListening(false)
+      }
+    }
+
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.abort()
+      }
+    }
+  }, [])
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -124,6 +194,24 @@ const ChatPage = () => {
     }
   }
 
+  const toggleSpeechRecognition = () => {
+    if (!speechSupported) {
+      alert("Speech recognition is not supported in your browser.")
+      return
+    }
+
+    if (isListening) {
+      recognitionRef.current?.stop()
+    } else {
+      try {
+        recognitionRef.current?.start()
+      } catch (error) {
+        console.error("Failed to start speech recognition:", error)
+        alert("Failed to start speech recognition. Please try again.")
+      }
+    }
+  }
+
   if (loading) {
     return (
       <div className="loading-container">
@@ -169,6 +257,11 @@ const ChatPage = () => {
           ) : (
             <div className="messages-list">
               {messages.map((message) => {
+                // Console log each message to debug
+                console.log("Rendering message:", message)
+                console.log("Message emotion:", message.emotion)
+                console.log("Is admin:", isAdmin)
+                console.log("Should show emotion:", isAdmin && message.emotion && message.role === "ai")
 
                 return (
                   <div
@@ -220,11 +313,21 @@ const ChatPage = () => {
               value={newMessage}
               onChange={handleTextareaChange}
               onKeyDown={handleKeyDown}
-              placeholder="Type your message..."
+              placeholder={isListening ? "Listening..." : "Type your message..."}
               className="message-input"
               disabled={sending}
               rows={1}
             />
+            {speechSupported && (
+              <button
+                onClick={toggleSpeechRecognition}
+                disabled={sending}
+                className={`mic-button ${isListening ? "listening" : ""}`}
+                title={isListening ? "Stop recording" : "Start voice input"}
+              >
+                {isListening ? <MicOff size={20} /> : <Mic size={20} />}
+              </button>
+            )}
             <button onClick={sendMessage} disabled={!newMessage.trim() || sending} className="send-button">
               {sending ? <Loader2 size={20} className="animate-spin" /> : <Send size={20} />}
             </button>
@@ -421,6 +524,40 @@ const ChatPage = () => {
           color: var(--text-muted);
         }
 
+        .mic-button {
+          width: 44px;
+          height: 44px;
+          border-radius: 50%;
+          border: none;
+          background: var(--secondary-bg);
+          color: var(--text-secondary);
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.3s ease;
+          flex-shrink: 0;
+          border: 1px solid var(--border-color);
+        }
+
+        .mic-button:hover:not(:disabled) {
+          background: var(--tertiary-bg);
+          color: var(--text-primary);
+          transform: scale(1.05);
+        }
+
+        .mic-button.listening {
+          background: linear-gradient(135deg, #EF4444, #DC2626);
+          color: white;
+          animation: pulse 1.5s ease-in-out infinite;
+          border-color: #EF4444;
+        }
+
+        .mic-button:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+
         .send-button {
           width: 44px;
           height: 44px;
@@ -457,6 +594,17 @@ const ChatPage = () => {
           }
         }
 
+        @keyframes pulse {
+          0%, 100% {
+            transform: scale(1);
+            box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+          }
+          50% {
+            transform: scale(1.05);
+            box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+          }
+        }
+
         @keyframes spin {
           from {
             transform: rotate(0deg);
@@ -485,12 +633,19 @@ const ChatPage = () => {
 
           .input-container {
             padding: 0 16px;
+            gap: 8px;
           }
 
           .emotion-corner {
             font-size: 9px;
             padding: 1px 4px;
             max-width: 100px;
+          }
+
+          .mic-button,
+          .send-button {
+            width: 40px;
+            height: 40px;
           }
         }
       `}</style>
