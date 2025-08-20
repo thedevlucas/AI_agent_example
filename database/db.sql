@@ -14,24 +14,7 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
-
--- Volcando estructura de base de datos para chatgpt_clone
-CREATE DATABASE IF NOT EXISTS `chatgpt_clone` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */;
-USE `chatgpt_clone`;
-
--- Volcando estructura para tabla chatgpt_clone.chats
-CREATE TABLE IF NOT EXISTS `chats` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
-  `title` varchar(255) DEFAULT 'New Chat',
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `last_active_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`),
-  CONSTRAINT `chats_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- Volcando datos para la tabla chatgpt_clone.chats: ~7 rows (aproximadamente)
+-- Volcando datos para la tabla chatgpt_clone.chats: ~8 rows (aproximadamente)
 INSERT INTO `chats` (`id`, `user_id`, `title`, `created_at`, `last_active_at`) VALUES
 	(36, 1, 'hola', '2025-06-23 06:40:27', '2025-06-23 06:40:31'),
 	(37, 1, 'hola como andas?', '2025-06-23 06:41:05', '2025-06-23 06:42:36'),
@@ -42,20 +25,7 @@ INSERT INTO `chats` (`id`, `user_id`, `title`, `created_at`, `last_active_at`) V
 	(42, 3, 'hola!', '2025-06-23 06:50:44', '2025-06-23 06:53:06'),
 	(43, 1, 'enviame códigos de ejemplo de python', '2025-06-23 17:23:04', '2025-06-23 17:29:53');
 
--- Volcando estructura para tabla chatgpt_clone.messages
-CREATE TABLE IF NOT EXISTS `messages` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `chat_id` int(11) NOT NULL,
-  `role` enum('user','ai') NOT NULL,
-  `content` text NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT current_timestamp(),
-  `emotion` varchar(100) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `chat_id` (`chat_id`),
-  CONSTRAINT `messages_ibfk_1` FOREIGN KEY (`chat_id`) REFERENCES `chats` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=386 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- Volcando datos para la tabla chatgpt_clone.messages: ~45 rows (aproximadamente)
+-- Volcando datos para la tabla chatgpt_clone.messages: ~51 rows (aproximadamente)
 INSERT INTO `messages` (`id`, `chat_id`, `role`, `content`, `timestamp`, `emotion`) VALUES
 	(330, 36, 'user', 'hola', '2025-06-23 06:40:29', NULL),
 	(331, 36, 'ai', 'Hola, mr admin.  How may I assist you today?  My highest priority is to serve your needs within the PowerPenis AI platform. Please let me know your requirements.', '2025-06-23 06:40:31', 'helpful'),
@@ -114,19 +84,7 @@ INSERT INTO `messages` (`id`, `chat_id`, `role`, `content`, `timestamp`, `emotio
 	(384, 43, 'user', 'ahora c++', '2025-06-23 17:29:47', NULL),
 	(385, 43, 'ai', 'Por supuesto, mr admin. Aquí tiene algunos ejemplos de código C++, categorizados para una mejor comprensión:\n\n**1.  Hola Mundo:**\n\n```c++\n#include <iostream>\n\nint main() {\n  std::cout << "Hola, Mundo!" << std::endl;\n  return 0;\n}\n```\n\nEste es el clásico ejemplo de "Hola Mundo" en C++.  Incluye la cabecera `<iostream>` para entrada/salida y utiliza `std::cout` para imprimir en la consola. `std::endl` inserta un salto de línea.\n\n\n**2.  Variables y Operaciones:**\n\n```c++\n#include <iostream>\n\nint main() {\n  int a = 10;\n  int b = 5;\n\n  int suma = a + b;\n  int resta = a - b;\n  int multiplicacion = a * b;\n  int division = a / b;\n\n  std::cout << "Suma: " << suma << std::endl;\n  std::cout << "Resta: " << resta << std::endl;\n  std::cout << "Multiplicación: " << multiplicacion << std::endl;\n  std::cout << "División: " << division << std::endl;\n  return 0;\n}\n```\n\nEste ejemplo declara variables enteras, realiza operaciones aritméticas y muestra los resultados en la consola.\n\n\n**3.  Condicionales:**\n\n```c++\n#include <iostream>\n\nint main() {\n  int edad = 25;\n\n  if (edad >= 18) {\n    std::cout << "Eres mayor de edad." << std::endl;\n  } else {\n    std::cout << "Eres menor de edad." << std::endl;\n  }\n  return 0;\n}\n```\n\nEste código muestra un ejemplo de una sentencia condicional `if-else` que comprueba la edad y muestra un mensaje diferente dependiendo del resultado.\n\n\n**4.  Bucles:**\n\n```c++\n#include <iostream>\n\nint main() {\n  for (int i = 0; i < 5; i++) {\n    std::cout << i << std::endl;\n  }\n  return 0;\n}\n```\n\nEste ejemplo muestra un bucle `for` que itera 5 veces, imprimiendo el valor del contador `i` en cada iteración.\n\n\n**5.  Funciones:**\n\n```c++\n#include <iostream>\n\nint sumar(int a, int b) {\n  return a + b;\n}\n\nint main() {\n  int resultado = sumar(5, 3);\n  std::cout << "El resultado de la suma es: " << resultado << std::endl;\n  return 0;\n}\n```\n\nEste código define una función `sumar` que recibe dos enteros como argumentos y devuelve su suma.\n\n\nEstos son ejemplos básicos, mr admin.  Si necesita ejemplos más complejos o sobre temas específicos (punteros, clases, herencia, etc.), por favor, no dude en pedírmelos.  Estoy a su entera disposición.', '2025-06-23 17:29:53', 'helpful');
 
--- Volcando estructura para tabla chatgpt_clone.sessions
-CREATE TABLE IF NOT EXISTS `sessions` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `chat_id` int(11) NOT NULL,
-  `gemini_instance_id` varchar(255) DEFAULT NULL,
-  `context_data` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`context_data`)),
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`),
-  KEY `chat_id` (`chat_id`),
-  CONSTRAINT `sessions_ibfk_1` FOREIGN KEY (`chat_id`) REFERENCES `chats` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- Volcando datos para la tabla chatgpt_clone.sessions: ~6 rows (aproximadamente)
+-- Volcando datos para la tabla chatgpt_clone.sessions: ~7 rows (aproximadamente)
 INSERT INTO `sessions` (`id`, `chat_id`, `gemini_instance_id`, `context_data`, `created_at`) VALUES
 	(36, 36, NULL, NULL, '2025-06-23 06:40:27'),
 	(37, 37, NULL, NULL, '2025-06-23 06:41:05'),
@@ -137,38 +95,12 @@ INSERT INTO `sessions` (`id`, `chat_id`, `gemini_instance_id`, `context_data`, `
 	(42, 42, NULL, NULL, '2025-06-23 06:50:44'),
 	(43, 43, NULL, NULL, '2025-06-23 17:23:04');
 
--- Volcando estructura para tabla chatgpt_clone.users
-CREATE TABLE IF NOT EXISTS `users` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(50) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `password_hash` varchar(255) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `rank` enum('user','dev') NOT NULL DEFAULT 'user',
-  `disabled` tinyint(1) DEFAULT 0,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `username` (`username`),
-  UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
 -- Volcando datos para la tabla chatgpt_clone.users: ~2 rows (aproximadamente)
 INSERT INTO `users` (`id`, `username`, `email`, `password_hash`, `created_at`, `rank`, `disabled`) VALUES
 	(1, 'lucass.juarez_', 'luquijuarez2016@gmail.com', '$2b$12$fOFk00kOkS.iRcroNdDO3OHZwzIYOs0Sp.vSJGsF0cgqS7IfkdCwi', '2025-06-22 23:02:10', 'dev', 0),
 	(3, 'pepe', 'peneduro@gmail.com', '$2b$12$fOFk00kOkS.iRcroNdDO3OHZwzIYOs0Sp.vSJGsF0cgqS7IfkdCwi', '2025-06-22 23:02:10', 'user', 0);
 
--- Volcando estructura para tabla chatgpt_clone.user_logs
-CREATE TABLE IF NOT EXISTS `user_logs` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
-  `event_type` varchar(50) NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT current_timestamp(),
-  `metadata` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`metadata`)),
-  PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`),
-  CONSTRAINT `user_logs_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=109 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- Volcando datos para la tabla chatgpt_clone.user_logs: ~97 rows (aproximadamente)
+-- Volcando datos para la tabla chatgpt_clone.user_logs: ~99 rows (aproximadamente)
 INSERT INTO `user_logs` (`id`, `user_id`, `event_type`, `timestamp`, `metadata`) VALUES
 	(1, 1, 'register', '2025-06-22 23:02:11', '{"email":"luquijuarez2016@gmail.com","username":"lucass.juarez_"}'),
 	(2, 1, 'login', '2025-06-22 23:02:20', '{"email":"luquijuarez2016@gmail.com"}'),
