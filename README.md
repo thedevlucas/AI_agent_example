@@ -1,70 +1,153 @@
-# Getting Started with Create React App
+![Header](https://github.com/TheDevLucas/starbucks-design-responsive/blob/main/77070f74-ea26-41ae-a154-b881c51bb2cf.jpeg?raw=true)
+<a name="readme-top"></a>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<div align="center">
 
-## Available Scripts
+![GitHub followers](https://img.shields.io/github/followers/TheDevLucas?style=for-the-badge)
+![GitHub Stars](https://img.shields.io/github/stars/TheDevLucas/lia-admin-ai?style=for-the-badge)
+![GitHub Forks](https://img.shields.io/github/forks/TheDevLucas/lia-admin-ai?style=for-the-badge)
 
-In the project directory, you can run:
+## Lia — Admin AI Agent (Gemini‑powered)
+An admin-focused AI agent with a strict command protocol and a deferential persona. Built with **React**, **Express.js**, and **MySQL**. The language model is **powered by Gemini**.
 
-### `npm start`
+</div>
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+<p align="right">(<a href="#readme-top">Go up</a>)</p>
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## ✨ Features
 
-### `npm test`
+- **Gemini-powered reasoning** with a persona called **Lia** (admin assistant).
+- **Automatic language detection** and responses in the user’s language.
+- **Two-phase command protocol** (JSON-only request → human-readable result).
+- **Emotional state tag** appended to every normal response (e.g., `{"emotion":"focused"}`).
+- **Security & conduct rules** embedded in the system prompt.
+- **Full-stack implementation** using **React (frontend)** + **Express.js (backend)** + **MySQL (database)**.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+<p align="right">(<a href="#readme-top">Go up</a>)</p>
 
-### `npm run build`
+## 🛠️ Stack
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- ![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB) – Frontend UI
+- ![Express.js](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white) – Backend API
+- ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white) – Persistent storage
+- ![Node.js](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white) – Runtime
+- ![Gemini](https://img.shields.io/badge/Gemini%20API-0B57D0?style=for-the-badge&logo=google&logoColor=white) – LLM provider (model powering the agent)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+<p align="right">(<a href="#readme-top">Go up</a>)</p>
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 🧠 System Prompt (persona)
 
-### `npm run eject`
+Lia’s system instructions (summary): the assistant treats the administrator as **mr admin**, follows a **formal and respectful** tone, detects the user’s language, **never mentions providers during conversation**, and always appends a JSON **emotion label** at the end of normal replies. For **admin commands**, Lia replies with **only a clean JSON object**.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+> **Note:** Although the persona hides the provider in chat, the project itself is **powered by Gemini**.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+<p align="right">(<a href="#readme-top">Go up</a>)</p>
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## 🔧 Command Protocol
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Phase 1 — JSON-only request (no extra text, no markdown)
+```json
+{"command": "commandName", "args": ["param1", "param2"]}
+```
 
-## Learn More
+**Available commands:**
+- `searchUser ["username"]`
+- `getUserStats []`
+- `listUsers []`
+- `banUser ["username"]`
+- `unbanUser ["username"]`
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+**Examples:**
+```json
+{"command": "searchUser", "args": ["john"]}
+```
+```json
+{"command": "banUser", "args": ["john"]}
+```
+```json
+{"command": "getUserStats", "args": []}
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Phase 2 — Result explanation
+After the server executes the command, Lia responds with a **professional explanation** of the outcome.
 
-### Code Splitting
+<p align="right">(<a href="#readme-top">Go up</a>)</p>
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## 🚀 Getting Started
 
-### Analyzing the Bundle Size
+### Prerequisites
+- Node.js 18+
+- MySQL 8+
+- A **Gemini** API key
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### Environment Variables
+Create a `.env` file in the project root:
 
-### Making a Progressive Web App
+```bash
+# LLM
+GEMINI_API_KEY=your_gemini_api_key
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+# App
+AGENT_NAME=Lia
+DEFAULT_USER_RANK=owner
+PORT=3000
 
-### Advanced Configuration
+# Database (MySQL)
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=root
+DB_PASSWORD=secret
+DB_NAME=lia_ai
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### Installation
 
-### Deployment
+```bash
+# 1) Install deps
+pnpm i   # or: npm i / yarn
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+# 2) Run database migrations / seed (example; adapt to your tooling)
+# npx prisma migrate dev
+# npx prisma db seed
 
-### `npm run build` fails to minify
+# 3) Start dev servers
+pnpm dev   # backend + frontend (configure scripts as needed)
+# pnpm build && pnpm start  # for production
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+<p align="right">(<a href="#readme-top">Go up</a>)</p>
+
+## 📦 Project Structure (suggested)
+
+```
+.
+├─ client/                # React app
+│  └─ src/
+├─ server/                # Express.js API
+│  ├─ commands/           # searchUser, listUsers, banUser, unbanUser, getUserStats
+│  ├─ llm/                # Gemini client
+│  ├─ middleware/         # auth, rate limits
+│  ├─ routes/
+│  └─ db/                 # MySQL access (ORM/queries)
+├─ scripts/               # tooling and maintenance
+├─ tests/                 # protocol & integration tests
+├─ .env.example
+└─ README.md
+```
+
+<p align="right">(<a href="#readme-top">Go up</a>)</p>
+
+## 🔒 Security Notes
+
+- **RBAC in the server** (do not rely on prompts for real permissions).
+- **Rate limiting & audit logs** for all admin commands.
+- **Sensitive data** should be masked in logs and secured via secrets management.
+- **Validation**: enforce JSON-only format for Phase 1 at the API boundary.
+
+<p align="right">(<a href="#readme-top">Go up</a>)</p>
+
+## 📝 License
+
+MIT — see `LICENSE`.
+
+<p align="right">(<a href="#readme-top">Go up</a>)</p>
