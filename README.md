@@ -3,8 +3,8 @@
 <div align="center">
 
 ![GitHub followers](https://img.shields.io/github/followers/TheDevLucas?style=for-the-badge)
-![GitHub Stars](https://img.shields.io/github/stars/TheDevLucas/lia-admin-ai?style=for-the-badge)
-![GitHub Forks](https://img.shields.io/github/forks/TheDevLucas/lia-admin-ai?style=for-the-badge)
+![GitHub Stars](https://img.shields.io/github/stars/TheDevLucas/AI_agent_example?style=for-the-badge)
+![GitHub Forks](https://img.shields.io/github/forks/TheDevLucas/AI_agent_example?style=for-the-badge)
 
 ## Lia — Admin AI Agent (Gemini‑powered)
 An admin-focused AI agent with a strict command protocol and a deferential persona. Built with **React**, **Express.js**, and **MySQL**. The language model is **powered by Gemini**.
